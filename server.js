@@ -3,6 +3,7 @@ const express = require("express");
 
 const connectDB = require("./config/connection");
 const notFoundMiddleware = require("./middleware/not-found");
+const User = require("./models/User");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,11 +14,23 @@ app.use(express.json());
 
 // Routes
 app.get("/api/v1", (req, res) => {
-  res.json({ success: true, message: "Home page" });
+  try {
+    res.json({ success: true, message: "Home page" });
+    
+  } catch (error) {
+    console.log(error)
+  }
 });
 
-app.post("/api/v1", (req, res) => {
-  return res.json({ success: true, message: "Post request", data: req.body });
+app.post("/api/v1", async (req, res) => {
+  try {
+    console.log(req.body)
+    const user = await User.create(req.body)
+    return res.json({ success: true, message: "Post request", data: user });
+    
+  } catch (error) {
+    console.log(error)
+  }
 });
 
 // Middleware
